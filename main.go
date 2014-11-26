@@ -200,7 +200,7 @@ func main() {
 	dbuser := flag.String("dbuser", "root", "Influx db username")
 	dbpass := flag.String("dbpass", "root", "Influx db password")
 	dbhost := flag.String("dbhost", "localhost", "host to use for submitting data to influxdb")
-	dbport := flag.String("dbport", "8086", "influx db port")
+	dbport := flag.Int("dbport", 8086, "influx db port")
 	dbname := flag.String("dbname", "pings", "Name of the influx database to submit data to")
 	batch := flag.Int("batch", 1, "Batch entries together before sending to influx (useful for piping heaps of ping data)")
 	flag.Parse()
