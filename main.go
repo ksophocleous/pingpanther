@@ -50,11 +50,27 @@ type entry struct {
 	ResponseFrom string
 }
 
+func checkTimeout(c chan struct{}) {
+	for {
+		select {
+			case <-c:
+				return
+
+			case <-time.After(30*time.Second):
+				log.Warnf("timeout channel is still open!!")
+		}
+	}
+}
+
 func postJSONToInflux(jsonbytes []byte, url string) error {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonbytes))
 	if err != nil {
 		return fmt.Errorf("NewRequest post to influxdb failed: %s", err.Error())
 	}
+
+	c := make(chan struct{})
+	defer close(c)
+	go checkTimeout(c)
 
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
